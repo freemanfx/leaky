@@ -16,11 +16,13 @@ import static java.util.Arrays.asList;
 
 
 public class ListAdapter extends ArrayAdapter<Integer> {
+    private final Model model;
     private List<Integer> images = asList(R.drawable.i1, R.drawable.i2, R.drawable.i1, R.drawable.i2, R.drawable.i1, R.drawable.i2, R.drawable.i1, R.drawable.i2, R.drawable.i1, R.drawable.i2);
 
-    public ListAdapter(Context context) {
+    public ListAdapter(Context context, Model model) {
         super(context, R.layout.list_fragment_item);
         addAll(images);
+        this.model = model;
     }
 
     @Override
@@ -35,13 +37,12 @@ public class ListAdapter extends ArrayAdapter<Integer> {
 
         imageView.setOnClickListener(getOnclickListener());
 
-        BeanProvider.imageService().imagesFromDrawable(currentItem)
-                .subscribe(new Action1<Bitmap>() {
-                    @Override
-                    public void call(Bitmap bitmap) {
-                        imageView.setImageBitmap(bitmap);
-                    }
-                });
+        model.getDrawable(currentItem, new Action1<Bitmap>() {
+            @Override
+            public void call(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        });
 
         return convertView;
     }
